@@ -1,0 +1,11 @@
+TbMedico { CRM integer pk increments CPF varchar(20) Nome varchar(100) CodEspe integer *>
+
+TbEspecialidade.CodEspe CodCid integer *> TbCidade.CodCid } 
+TbEnfermeira { COREN integer pk increments CPF varchar(20) Nome integer }
+TbEspecialidade { CodEspe integer pk increments Nome varchar(50) }
+TbMeFer { CodMeFe integer pk increments CRM integer >* TbMedico.CRM COREN integer > TbEnfermeira.COREN } 
+TbUF { CodUF integer pk increments NoUF varchar(100) } 
+TbCidade { CodCid integer pk increments CodUF integer *> TbUF.CodUF NoCid varchar(100) } 
+TbPaciente { CPF varchar(20) pk Nome varchar(100) Endereco integer(100) Telefone integer(20) }
+TbPaMe { CodPaMe integer pk increments CPF varchar(20) *>
+ TbPaciente.CPF CRM integer *> TbMedico.CRM }
