@@ -1,11 +1,42 @@
-TbMedico { CRM integer pk increments CPF varchar(20) Nome varchar(100) CodEspe integer *>
+-- Tabela de Especialidades
+CREATE TABLE Especialidade (
+    CodEspe INT PRIMARY KEY AUTO_INCREMENT,
+    Nome VARCHAR(50) NOT NULL
+);
 
-TbEspecialidade.CodEspe CodCid integer *> TbCidade.CodCid } 
-TbEnfermeira { COREN integer pk increments CPF varchar(20) Nome integer }
-TbEspecialidade { CodEspe integer pk increments Nome varchar(50) }
-TbMeFer { CodMeFe integer pk increments CRM integer >* TbMedico.CRM COREN integer > TbEnfermeira.COREN } 
-TbUF { CodUF integer pk increments NoUF varchar(100) } 
-TbCidade { CodCid integer pk increments CodUF integer *> TbUF.CodUF NoCid varchar(100) } 
-TbPaciente { CPF varchar(20) pk Nome varchar(100) Endereco integer(100) Telefone integer(20) }
-TbPaMe { CodPaMe integer pk increments CPF varchar(20) *>
- TbPaciente.CPF CRM integer *> TbMedico.CRM }
+-- Tabela de Médicos
+CREATE TABLE Medico (
+    CRM INT PRIMARY KEY AUTO_INCREMENT,
+    Nome VARCHAR(100) NOT NULL,
+    CodEspe INT,
+    FOREIGN KEY (CodEspe) REFERENCES Especialidade(CodEspe),
+);
+
+-- Tabela de Pacientes
+CREATE TABLE Paciente (
+    CPF VARCHAR(20) PRIMARY KEY,
+    Nome VARCHAR(100) NOT NULL,
+    Email VARCHAR(100) NOT NULL
+);
+
+-- Tabela de Agendamento de Consultas (essa tabela será importante para o sistema)
+CREATE TABLE Agendamento (
+    CodAgendamento INT PRIMARY KEY AUTO_INCREMENT,
+    CPF_Paciente VARCHAR(20),
+    CRM_Medico INT,
+    Data DATE NOT NULL,
+    Horario TIME NOT NULL,
+    Status ENUM('Agendada', 'Cancelada', 'Remarcada') DEFAULT 'Agendada',
+    FOREIGN KEY (CPF_Paciente) REFERENCES Paciente(CPF),
+    FOREIGN KEY (CRM_Medico) REFERENCES Medico(CRM)
+);
+
+-- Tabela para a Busca de Médicos e Horários
+CREATE TABLE BuscarMedico (
+    CodBusca INT PRIMARY KEY AUTO_INCREMENT,
+    Especialidade VARCHAR(50),
+    Data DATE,
+    Horario TIME,
+    CRM INT,
+    FOREIGN KEY (CRM) REFERENCES Medico(CRM)
+);
