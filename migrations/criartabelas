@@ -9,7 +9,7 @@ CREATE TABLE Medico (
     CRM INT PRIMARY KEY AUTO_INCREMENT,
     Nome VARCHAR(100) NOT NULL,
     CodEspe INT,
-    FOREIGN KEY (CodEspe) REFERENCES Especialidade(CodEspe),
+    FOREIGN KEY (CodEspe) REFERENCES Especialidade(CodEspe)
 );
 
 -- Tabela de Pacientes
