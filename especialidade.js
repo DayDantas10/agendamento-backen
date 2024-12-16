@@ -31,39 +31,29 @@ app.listen(port, () => {
 
 });
 
-app.get('/paciente', (req, res) => {
-    connection.query('SELECT * FROM paciente', function (err, pacientes, fields) {
+
+
+app.get('/especialidade', (req, res) => {
+    connection.query('SELECT * FROM especialidade', function (err, especialidade, fields) {
         if (err) {
             res.json({ erro: err.sqlMessage });
         } else {
-            res.json(pacientes);
+            res.json(especialidade);
         }
     });
 });
-// Rota para buscar dados dos pacientes
-app.get('/paciente/:cpf', (req, res) => {
-    const cpf = req.params.cpf
-    console.log(req.params.cpf)
-    connection.query('SELECT * FROM paciente WHERE cpf=?', 
-      [cpf], function(err, paciente, fields) {
-        if (err) {
-            res.json({erro: err.sqlMessage})
-        } else {
-            res.json(paciente)
-        }
-      });
-})
-// Rota para adicionar um paciente //
-app.post('/paciente', (req, res) => {
-    const { nome, cpf, email } = req.body; 
+
+// Rota para adicionar a especialidade //
+app.post('/especialidade', (req, res) => {
+    const { CodEsp,nome } = req.body; 
     console.log(req.body)
-    const sql = 'INSERT INTO paciente (nome, cpf, email) VALUES (?, ?, ?)'; 
+    const sql = 'INSERT INTO especialidade (CodEsp,nome) VALUES (?, ?)'; 
     
-    connection.query(sql, [nome, cpf, email],
+    connection.query(sql, [CodEsp,nome],
             (err, result) => {
                 if (err) { res.json({ erro: err.sqlMessage }); }
                 else {
-                    res.json({ mensagem: 'Paciente adicionado com sucesso', id: result.insertId });
+                    res.json({ mensagem: 'Especialidade adicionada com sucesso', id: result.insertId });
                 }
             })
 })

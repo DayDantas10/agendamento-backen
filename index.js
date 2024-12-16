@@ -20,42 +20,6 @@ app.listen(port, () => {
         else { console.log('Erro na conexão ao BD' + erro.sqlMessage) }
     }) 
   })
-
-app.get('/', (req, res) => {
-  res.send('Hello World!')
-})
-
-app.get('/produto', (req, res) => {
-    connection.query('SELECT * FROM produto', 
-      function(err, prods, fields) {
-        if (err) {
-            res.json({erro: err.sqlMessage})
-        } else {
-            res.json(prods)
-        }
-      });
-})
-
-app.get('/produto/:id', (req, res) => {
-    const id = req.params.id
-    connection.query('SELECT * FROM produto WHERE id=?', 
-      [id], function(err, prods, fields) {
-        if (err) {
-            res.json({erro: err.sqlMessage})
-        } else {
-            res.json(prods)
-        }
-      });
-})
-
-app.post('/produto', (req, res) => {
-  let produto = req.body
-
-  console.log(produto)
-});
-
-//exemplo da loja
-
 app.get('/medicos', (req, res) => {
   connection.query('SELECT * FROM medico', [crm], (err, results) => {
     if (err) {
@@ -65,10 +29,6 @@ app.get('/medicos', (req, res) => {
       res.json(results); // Retorna os resultados da consulta
     }
   });
-});
-
-router.get('/', (req, res) => {
-  executarConsulta('SELECT * FROM medico', [], res, "Erro na consulta de tarefas");
 });
 
 //Medicos Rota para buscar uma tarefa específica

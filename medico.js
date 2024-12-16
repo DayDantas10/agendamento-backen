@@ -31,12 +31,14 @@ app.listen(port, () => {
 
 });
 
-app.get('/paciente', (req, res) => {
-    connection.query('SELECT * FROM paciente', function (err, pacientes, fields) {
+
+
+app.get('/medico', (req, res) => {
+    connection.query('SELECT * FROM medico', function (err, medico, fields) {
         if (err) {
             res.json({ erro: err.sqlMessage });
         } else {
-            res.json(pacientes);
+            res.json(medico);
         }
     });
 });
