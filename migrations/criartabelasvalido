@@ -14,8 +14,8 @@ CREATE TABLE Medico (
 
 -- Tabela de Pacientes
 CREATE TABLE Paciente (
-    CPF VARCHAR(20) PRIMARY KEY,  -- CPF já está como VARCHAR
-    nome VARCHAR(100) NOT NULL,  -- Alterado para "nome" com "n" minúsculo
+    CPF VARCHAR(20) PRIMARY KEY,  
+    nome VARCHAR(100) NOT NULL,  -
     Email VARCHAR(100) NOT NULL
 );
 
@@ -23,7 +23,7 @@ CREATE TABLE Paciente (
 CREATE TABLE Agendamento (
     CodAgendamento INT PRIMARY KEY AUTO_INCREMENT,
     CPF_Paciente VARCHAR(20),
-    CRM_Medico VARCHAR(20),  -- Alterado para VARCHAR
+    CRM_Medico VARCHAR(20), 
     Data DATE NOT NULL,
     Horario TIME NOT NULL,
     Status ENUM('Agendada', 'Cancelada', 'Remarcada') DEFAULT 'Agendada',
@@ -37,6 +37,6 @@ CREATE TABLE BuscarMedico (
     Especialidade VARCHAR(50),
     Data DATE,
     Horario TIME,
-    CRM VARCHAR(20),  -- Alterado para VARCHAR
+    CRM VARCHAR(20), 
     FOREIGN KEY (CRM) REFERENCES Medico(CRM)
 );

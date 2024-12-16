@@ -28,29 +28,6 @@ app.listen(port, () => {
     });
 
 });
-
-app.get('/medico', (req, res) => {
-    connection.query('SELECT * FROM medico', function (err, medico, fields) {
-        if (err) {
-            res.json({ erro: err.sqlMessage });
-        } else {
-            res.json(medico);
-        }
-    });
-});
-// Rota para buscar dados dos pacientes
-app.get('/paciente/:cpf', (req, res) => {
-    const cpf = req.params.cpf
-    console.log(req.params.cpf)
-    connection.query('SELECT * FROM paciente WHERE cpf=?', 
-      [cpf], function(err, paciente, fields) {
-        if (err) {
-            res.json({erro: err.sqlMessage})
-        } else {
-            res.json(paciente)
-        }
-      });
-})
 // Rota para adicionar um paciente //
 app.post('/paciente', (req, res) => {
     const { nome, cpf, email } = req.body; 
@@ -65,3 +42,13 @@ app.post('/paciente', (req, res) => {
                 }
             })
 })
+app.get('/medico', (req, res) => {
+    connection.query('SELECT * FROM medico', function (err, medico, fields) {
+        if (err) {
+            res.json({ erro: err.sqlMessage });
+        } else {
+            res.json(medico);
+        }
+    });
+});
+
