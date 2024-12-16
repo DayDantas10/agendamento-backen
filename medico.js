@@ -42,30 +42,30 @@ app.get('/medico', (req, res) => {
         }
     });
 });
-// Rota para buscar dados dos pacientes
-app.get('/paciente/:cpf', (req, res) => {
-    const cpf = req.params.cpf
-    console.log(req.params.cpf)
-    connection.query('SELECT * FROM paciente WHERE cpf=?', 
-      [cpf], function(err, paciente, fields) {
+// Rota para buscar dados dos médicos
+app.get('/medico/:crm', (req, res) => {
+    const crm = req.params.crm
+    console.log(req.params.crm)
+    connection.query('SELECT * FROM medico WHERE crm=?', 
+      [crm], function(err, medico, fields) {
         if (err) {
             res.json({erro: err.sqlMessage})
         } else {
-            res.json(paciente)
+            res.json(medico)
         }
       });
 })
-// Rota para adicionar um paciente //
-app.post('/paciente', (req, res) => {
-    const { nome, cpf, email } = req.body; 
+// Rota para adicionar um médico //
+app.post('/medico', (req, res) => {
+    const { crm,nome,CodEsp } = req.body; 
     console.log(req.body)
-    const sql = 'INSERT INTO paciente (nome, cpf, email) VALUES (?, ?, ?)'; 
+    const sql = 'INSERT INTO medico (crm,nome,CodEsp) VALUES (?, ?, ?)'; 
     
-    connection.query(sql, [nome, cpf, email],
+    connection.query(sql, [crm,nome,CodEsp],
             (err, result) => {
                 if (err) { res.json({ erro: err.sqlMessage }); }
                 else {
-                    res.json({ mensagem: 'Paciente adicionado com sucesso', id: result.insertId });
+                    res.json({ mensagem: 'Médico adicionado com sucesso', id: result.insertId });
                 }
             })
 })

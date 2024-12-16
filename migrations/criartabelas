@@ -1,3 +1,9 @@
+-- tabela de login
+CREATE TABLE login (
+    Cpf vatchar(15) PRIMARY KEY,
+    senha INT
+);
+
 -- Tabela de Especialidades
 CREATE TABLE Especialidade (
     CodEspe INT PRIMARY KEY AUTO_INCREMENT,
