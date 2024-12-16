@@ -1,0 +1,42 @@
+-- Tabela de Especialidades
+CREATE TABLE Especialidade (
+    CodEspe VARCHAR(20) PRIMARY KEY,  -- Alterado para VARCHAR
+    nome VARCHAR(50) NOT NULL  -- Alterado para "nome" com "n" minúsculo
+);
+
+-- Tabela de Médicos
+CREATE TABLE Medico (
+    CRM VARCHAR(20) PRIMARY KEY,  -- Alterado para VARCHAR
+    nome VARCHAR(100) NOT NULL,  -- Alterado para "nome" com "n" minúsculo
+    CodEspe VARCHAR(20),  -- Alterado para VARCHAR
+    FOREIGN KEY (CodEspe) REFERENCES Especialidade(CodEspe)
+);
+
+-- Tabela de Pacientes
+CREATE TABLE Paciente (
+    CPF VARCHAR(20) PRIMARY KEY,  -- CPF já está como VARCHAR
+    nome VARCHAR(100) NOT NULL,  -- Alterado para "nome" com "n" minúsculo
+    Email VARCHAR(100) NOT NULL
+);
+
+-- Tabela de Agendamento de Consultas
+CREATE TABLE Agendamento (
+    CodAgendamento INT PRIMARY KEY AUTO_INCREMENT,
+    CPF_Paciente VARCHAR(20),
+    CRM_Medico VARCHAR(20),  -- Alterado para VARCHAR
+    Data DATE NOT NULL,
+    Horario TIME NOT NULL,
+    Status ENUM('Agendada', 'Cancelada', 'Remarcada') DEFAULT 'Agendada',
+    FOREIGN KEY (CPF_Paciente) REFERENCES Paciente(CPF),
+    FOREIGN KEY (CRM_Medico) REFERENCES Medico(CRM)
+);
+
+-- Tabela para a Busca de Médicos e Horários
+CREATE TABLE BuscarMedico (
+    CodBusca INT PRIMARY KEY AUTO_INCREMENT,
+    Especialidade VARCHAR(50),
+    Data DATE,
+    Horario TIME,
+    CRM VARCHAR(20),  -- Alterado para VARCHAR
+    FOREIGN KEY (CRM) REFERENCES Medico(CRM)
+);

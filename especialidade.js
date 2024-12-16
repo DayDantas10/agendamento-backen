@@ -18,8 +18,6 @@ const connection = mysql.createConnection({
 // Iniciar o servidor
 app.listen(port, () => {
     console.log('Servidor rodando na porta 3000.');
-    
-
     // Conectar ao banco de dados
     connection.connect((err) => {
         if (err) {
@@ -31,9 +29,28 @@ app.listen(port, () => {
 
 });
 
+// Rota para adicionar a especialidade //
+app.post('/especialidade', (req, res) => {
+    const { CodEspe, nome } = req.body;
+  
+    // Validar dados antes de inserir
+    if (!nome) {
+      return res.status(400).send('Nome da especialidade é obrigatório');
+    }
+  
+    const query = 'INSERT INTO Especialidade (CodEspe, nome) VALUES (?, ?)';
+    db.query(query, [CodEspe, nome], (err, result) => {
+      if (err) {
+        console.error('Erro ao inserir especialidade:', err);
+        return res.status(500).send('Erro ao adicionar especialidade');
+      }
+      res.status(201).send('Especialidade adicionada com sucesso');
+    });
+  });
+  
 
-
-app.get('/especialidade', (req, res) => {
+// Rota para buscar a especialidade //
+app.get('/especialidade/', (req, res) => {
     connection.query('SELECT * FROM especialidade', function (err, especialidade, fields) {
         if (err) {
             res.json({ erro: err.sqlMessage });
@@ -42,18 +59,3 @@ app.get('/especialidade', (req, res) => {
         }
     });
 });
-
-// Rota para adicionar a especialidade //
-app.post('/especialidade', (req, res) => {
-    const { CodEsp,nome } = req.body; 
-    console.log(req.body)
-    const sql = 'INSERT INTO especialidade (CodEsp,nome) VALUES (?, ?)'; 
-    
-    connection.query(sql, [CodEsp,nome],
-            (err, result) => {
-                if (err) { res.json({ erro: err.sqlMessage }); }
-                else {
-                    res.json({ mensagem: 'Especialidade adicionada com sucesso', id: result.insertId });
-                }
-            })
-})

@@ -18,8 +18,6 @@ const connection = mysql.createConnection({
 // Iniciar o servidor
 app.listen(port, () => {
     console.log('Servidor rodando na porta 3000.');
-    
-
     // Conectar ao banco de dados
     connection.connect((err) => {
         if (err) {
@@ -30,8 +28,6 @@ app.listen(port, () => {
     });
 
 });
-
-
 
 app.get('/medico', (req, res) => {
     connection.query('SELECT * FROM medico', function (err, medico, fields) {
