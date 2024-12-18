@@ -1,42 +1,62 @@
 -- Tabela de Especialidades
 CREATE TABLE Especialidade (
-    CodEspe VARCHAR(20) PRIMARY KEY,  -- Alterado para VARCHAR
-    nome VARCHAR(50) NOT NULL  -- Alterado para "nome" com "n" minúsculo
+    CodEspe VARCHAR(20) PRIMARY KEY,  -- Código da especialidade (chave primária)
+    nome VARCHAR(50) NOT NULL  -- Nome da especialidade (campo obrigatório)
 );
 
 -- Tabela de Médicos
 CREATE TABLE Medico (
-    CRM VARCHAR(20) PRIMARY KEY,  -- Alterado para VARCHAR
-    nome VARCHAR(100) NOT NULL,  -- Alterado para "nome" com "n" minúsculo
-    CodEspe VARCHAR(20),  -- Alterado para VARCHAR
-    FOREIGN KEY (CodEspe) REFERENCES Especialidade(CodEspe)
+    CRM VARCHAR(20) PRIMARY KEY,  -- CRM do médico (chave primária)
+    nome VARCHAR(100) NOT NULL,   -- Nome do médico (campo obrigatório)
+    CodEspe VARCHAR(20),  -- Código da especialidade do médico (chave estrangeira)
+    FOREIGN KEY (CodEspe) REFERENCES Especialidade(CodEspe) -- Relacionamento com Especialidade
 );
 
 -- Tabela de Pacientes
 CREATE TABLE Paciente (
-    CPF VARCHAR(20) PRIMARY KEY,  
-    nome VARCHAR(100) NOT NULL,  -
-    Email VARCHAR(100) NOT NULL
+    CPF VARCHAR(20) PRIMARY KEY,  -- CPF do paciente (chave primária)
+    nome VARCHAR(100) NOT NULL,   -- Nome do paciente (campo obrigatório)
+    Email VARCHAR(100) NOT NULL   -- Email do paciente (campo obrigatório)
 );
 
 -- Tabela de Agendamento de Consultas
 CREATE TABLE Agendamento (
-    CodAgendamento INT PRIMARY KEY AUTO_INCREMENT,
-    CPF_Paciente VARCHAR(20),
-    CRM_Medico VARCHAR(20), 
-    Data DATE NOT NULL,
-    Horario TIME NOT NULL,
-    Status ENUM('Agendada', 'Cancelada', 'Remarcada') DEFAULT 'Agendada',
-    FOREIGN KEY (CPF_Paciente) REFERENCES Paciente(CPF),
-    FOREIGN KEY (CRM_Medico) REFERENCES Medico(CRM)
+    CodAgendamento INT PRIMARY KEY AUTO_INCREMENT,  -- Código do agendamento (chave primária com incremento automático)
+    CPF_Paciente VARCHAR(20),  -- CPF do paciente (relacionamento com Paciente)
+    CRM_Medico VARCHAR(20),    -- CRM do médico (relacionamento com Medico)
+    Data DATE NOT NULL,        -- Data do agendamento (campo obrigatório)
+    Horario TIME NOT NULL,     -- Horário do agendamento (campo obrigatório)
+    Status ENUM('Agendada', 'Cancelada', 'Remarcada') DEFAULT 'Agendada',  -- Status do agendamento
+    FOREIGN KEY (CPF_Paciente) REFERENCES Paciente(CPF),  -- Relacionamento com Paciente
+    FOREIGN KEY (CRM_Medico) REFERENCES Medico(CRM)  -- Relacionamento com Medico
 );
 
 -- Tabela para a Busca de Médicos e Horários
 CREATE TABLE BuscarMedico (
-    CodBusca INT PRIMARY KEY AUTO_INCREMENT,
-    Especialidade VARCHAR(50),
-    Data DATE,
-    Horario TIME,
-    CRM VARCHAR(20), 
-    FOREIGN KEY (CRM) REFERENCES Medico(CRM)
+    CodBusca INT PRIMARY KEY AUTO_INCREMENT,  -- Código da busca (chave primária com incremento automático)
+    Especialidade VARCHAR(50),  -- Especialidade desejada
+    Data DATE,                  -- Data da busca
+    Horario TIME,               -- Horário desejado
+    CRM VARCHAR(20),            -- CRM do médico (relacionamento com Medico)
+    FOREIGN KEY (CRM) REFERENCES Medico(CRM)  -- Relacionamento com Medico
+);
+
+-- Tabela de Horários (caso não exista previamente)
+CREATE TABLE Horarios (
+    id INT AUTO_INCREMENT PRIMARY KEY,  -- ID único para cada horário
+    medico_id VARCHAR(20),  -- CRM do médico (relacionamento com Medico)
+    horario TIME NOT NULL,  -- Horário disponível para o médico
+    disponivel BOOLEAN DEFAULT TRUE,  -- Indica se o horário está disponível
+    FOREIGN KEY (medico_id) REFERENCES Medico(CRM) ON DELETE CASCADE  -- Relacionamento com Medico
+);
+
+-- Tabela de Agendamentos (caso seja necessário criar uma tabela separada)
+CREATE TABLE Agendamentos (
+    id INT AUTO_INCREMENT PRIMARY KEY,  -- ID único para cada agendamento
+    paciente_nome VARCHAR(255) NOT NULL,  -- Nome do paciente
+    paciente_email VARCHAR(255) NOT NULL, -- Email do paciente
+    horario_id INT,                     -- ID do horário agendado (relacionamento com Horarios)
+    data_agendamento DATETIME NOT NULL,  -- Data e hora do agendamento
+    status VARCHAR(50) DEFAULT 'Pendente',  -- Status do agendamento
+    FOREIGN KEY (horario_id) REFERENCES Horarios(id) ON DELETE CASCADE  -- Relacionamento com Horarios
 );

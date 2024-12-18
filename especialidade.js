@@ -55,5 +55,5 @@ app.post('/especialidade', (req, res) => {
                 else {
                     res.json({ mensagem: 'Especialidade adicionada com sucesso', id: result.insertId });
                 }
-            })
-})
+            });
+});
