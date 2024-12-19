@@ -1,69 +1,64 @@
-const express = require('express')
-const app = express()
-const port = 3000
+const express = require('express');
+const app = express();
 const mysql = require('mysql');
-const cors = require('cors')
-const bp = require('body-parser')
-app.use(cors())
-app.use(bp.json())
+const cors = require('cors');
+app.use(cors());
+app.use(express.json());
 
-// Configuração da conexão com o banco de dados
-const connection = mysql.createConnection({
+const db = mysql.createConnection({
     host: 'localhost',
     user: 'root',
-    password: '',
+    password: 'senha',
     database: 'clinica'
 });
 
-// Iniciar o servidor
-app.listen(port, () => {
-    console.log('Servidor rodando na porta 3000.');
-    
-
-    // Conectar ao banco de dados
-    connection.connect((err) => {
-        if (err) {
-            console.error('Erro ao conectar ao banco de dados:', err.stack);
-            return;
-        }
-        console.log('Conectado ao banco de dados.');
-    });
-
+// Conectar ao banco
+db.connect(err => {
+    if (err) throw err;
+    console.log('Conectado ao banco de dados');
 });
 
-app.get('/paciente', (req, res) => {
-    connection.query('SELECT * FROM paciente', function (err, pacientes, fields) {
-        if (err) {
-            res.json({ erro: err.sqlMessage });
-        } else {
-            res.json(pacientes);
-        }
+// Endpoint para buscar médicos por especialidade ou nome
+app.get('/medicos', (req, res) => {
+    const { nome, especialidade } = req.params;
+    let query = "SELECT * FROM medicos WHERE 1=1";
+    if (nome) query += ` AND nome LIKE '%${nome}%'`;
+    if (especialidade) query += ` AND especialidade LIKE '%${especialidade}%'`;
+
+    db.query(query, (err, results) => {
+        if (err) throw err;
+        res.json(results);
     });
 });
-// Rota para buscar dados dos pacientes
-app.get('/paciente/:cpf', (req, res) => {
-    const cpf = req.params.cpf
-    console.log(req.params.cpf)
-    connection.query('SELECT * FROM paciente WHERE cpf=?', 
-      [cpf], function(err, paciente, fields) {
-        if (err) {
-            res.json({erro: err.sqlMessage})
-        } else {
-            res.json(paciente)
-        }
-      });
-})
-// Rota para adicionar um paciente //
-app.post('/paciente', (req, res) => {
-    const { nome, cpf, email } = req.body; 
-    console.log(req.body)
-    const sql = 'INSERT INTO paciente (nome, cpf, email) VALUES (?, ?, ?)'; 
-    
-    connection.query(sql, [nome, cpf, email],
-            (err, result) => {
-                if (err) { res.json({ erro: err.sqlMessage }); }
-                else {
-                    res.json({ mensagem: 'Paciente adicionado com sucesso', id: result.insertId });
-                }
-            })
-})
+
+// Endpoint para buscar horários disponíveis de um médico
+app.get('/horarios', (req, res) => {
+    const { crm, data } = req.query;
+    const query = "SELECT * FROM horarios_disponiveis WHERE crm_medico = ? AND data_hora LIKE ? AND disponivel = true";
+    db.query(query, [crm, `${data}%`], (err, results) => {
+        if (err) throw err;
+        res.json(results);
+    });
+});
+
+// Endpoint para agendar consulta
+app.post('/agendar', (req, res) => {
+    const { cpf, crm, data_hora } = req.body;
+
+    // Remover horário da lista de disponíveis
+    const updateQuery = "UPDATE horarios_disponiveis SET disponivel = false WHERE crm_medico = ? AND data_hora = ?";
+    db.query(updateQuery, [crm, data_hora], (err, result) => {
+        if (err) throw err;
+
+        // Inserir a consulta na tabela de consultas
+        const insertQuery = "INSERT INTO consultas (cpf_paciente, crm_medico, data_hora) VALUES (?, ?, ?)";
+        db.query(insertQuery, [cpf, crm, data_hora], (err, result) => {
+            if (err) throw err;
+            res.json({ message: 'Consulta agendada com sucesso!' });
+        });
+    });
+});
+
+app.listen(3000, () => {
+    console.log('Servidor rodando na porta 3000');
+});
